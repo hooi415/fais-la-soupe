@@ -1,0 +1,336 @@
+"index.html"<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fais la Soupe! - Jeu éducatif interactif</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    color: #2c3e50;
+    max-width: 720px;
+    margin: 50px auto 80px;
+    padding: 0 25px;
+    user-select: none;
+    box-sizing: border-box;
+  }
+
+  h1 {
+    text-align: center;
+    color: #1a237e;
+    font-weight: 600;
+    font-size: 3rem;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 5px rgba(26, 35, 126, 0.2);
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #283593;
+    font-weight: 600;
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+  }
+
+  .centered {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  button.level-btn, button.next-btn, button.back-btn {
+    background: #3f51b5;
+    border: none;
+    color: white;
+    font-size: 18px;
+    padding: 14px 36px;
+    border-radius: 35px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(63,81,181,0.3);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    font-weight: 600;
+    min-width: 150px;
+  }
+
+  button.level-btn:hover, button.next-btn:hover {
+    background: #283593;
+    box-shadow: 0 12px 28px rgba(40,53,147,0.5);
+  }
+
+  button.back-btn {
+    background: #e53935;
+    min-width: 120px;
+    box-shadow: 0 8px 20px rgba(229,57,53,0.3);
+    font-weight: 600;
+  }
+
+  button.back-btn:hover {
+    background: #b71c1c;
+    box-shadow: 0 12px 28px rgba(183,28,28,0.5);
+  }
+
+  .instruction {
+    background: #ffffffcc;
+    border-radius: 18px;
+    padding: 20px 25px;
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 28px;
+    text-align: center;
+    color: #1a237e;
+    box-shadow: 0 6px 12px rgba(26,35,126,0.15);
+    line-height: 1.4;
+  }
+
+  .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 25px;
+  }
+
+  .button-group button {
+    background: #5c6bc0;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    padding: 14px 28px;
+    border-radius: 28px;
+    cursor: pointer;
+    min-width: 140px;
+    box-shadow: 0 4px 14px rgba(92,107,192,0.4);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    font-weight: 600;
+    user-select: none;
+    text-align: center;
+  }
+
+  .button-group button:hover:not(:disabled) {
+    background: #3949ab;
+    box-shadow: 0 6px 18px rgba(57,73,171,0.6);
+  }
+
+  .button-group button:disabled {
+    background: #9e9e9e;
+    cursor: default;
+    box-shadow: none;
+    text-decoration: line-through;
+  }
+
+  .feedback {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-top: 15px;
+    min-height: 30px;
+    letter-spacing: 0.04em;
+  }
+
+  .feedback.correct {
+    color: #388e3c;
+  }
+
+  .feedback.incorrect {
+    color: #d32f2f;
+  }
+
+  .match-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #quiz p {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+    text-align: center;
+    color: #303f9f;
+  }
+
+  #drag-area, #drop-area {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .drag-item, .drop-target {
+    padding: 15px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    width: 120px;
+    text-align: center;
+    font-size: 18px;
+    background: #fefefe;
+    user-select: none;
+  }
+
+  .drag-item {
+    cursor: grab;
+    background-color: #e3f2fd;
+    border-color: #90caf9;
+    transition: transform 0.2s ease;
+  }
+
+  .drag-item:active {
+    cursor: grabbing;
+    transform: scale(1.05);
+  }
+
+  .drop-target {
+    min-height: 60px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .correct {
+    border-color: #4caf50 !important;
+    background-color: #dcedc8 !important;
+  }
+
+  .incorrect {
+    border-color: #f44336 !important;
+    background-color: #ffcdd2 !important;
+  }
+
+</style>
+</head>
+<body>
+
+<h1>Fais la Soupe! - Jeu éducatif interactif</h1>
+
+<div id="level-selection" class="centered">
+  <button class="level-btn" onclick="startLevel('remediation')">Remediering</button>
+  <button class="level-btn" onclick="startLevel('basis')">Basis</button>
+  <button class="level-btn" onclick="startLevel('extra')">Extra</button>
+</div>
+
+<div id="game-area" class="hidden">
+  <h2 id="level-title"></h2>
+
+  <div id="content"></div>
+
+  <div class="instruction" id="step-instruction"></div>
+
+  <div id="drag-area"></div>
+  <div id="drop-area"></div>
+
+  <div id="quiz" class="hidden">
+    <p id="quiz-question"></p>
+    <div class="button-group" id="quiz-options"></div>
+    <div id="quiz-feedback" class="feedback"></div>
+  </div>
+
+  <div id="step-feedback" class="feedback"></div>
+
+  <div class="centered">
+    <button id="next-step-btn" class="next-btn" onclick="nextStep()">Suivant</button>
+    <button class="back-btn" onclick="goBack()">Retour au menu</button>
+  </div>
+</div>
+
+<script>
+  const levels = {
+    remediation: {
+      title: "Niveau Remédiation",
+      steps: [
+        {
+          instruction: "Pour les croûtons, rassemblez les ingrédients suivants:",
+          dragItems: [
+            {id: "huile", label: "🫒 Huile d'olive"},
+            {id: "beurre", label: "🧈 Beurre"},
+            {id: "baguette", label: "🥖 Baguette"},
+            {id: "parmesan", label: "🧀 Parmesan"},
+            {id: "sel", label: "🧂 Sel"},
+            {id: "poivre", label: "🌶️ Poivre"}
+          ],
+          dropTargets: [
+            {id: "huile", label: "Huile d'olive"},
+            {id: "beurre", label: "Beurre"},
+            {id: "baguette", label: "Baguette"},
+            {id: "parmesan", label: "Parmesan"},
+            {id: "sel", label: "Sel"},
+            {id: "poivre", label: "Poivre"}
+          ],
+          taskType: "dragdrop"
+        },
+        {
+          instruction: "Quelle est la bonne forme impérative pour dire 'chauffez la poêle' ?",
+          quiz: {
+            question: "Choisissez la bonne phrase impérative :",
+            options: ["Chauffez la poêle", "Chauffer la poêle", "Chauffe la poêle"],
+            correct: "Chauffez la poêle"
+          },
+          taskType: "quiz"
+        },
+        {
+          instruction: "Félicitations! Vous avez terminé le niveau Remédiation.",
+          taskType: "end"
+        }
+      ]
+    },
+    basis: {
+      title: "Niveau Basis",
+      steps: [
+        {
+          instruction: "Rassemblez les ingrédients pour la soupe à l'oignon :",
+          dragItems: [
+            {id: "huile", label: "🫒 Huile d'olive"},
+            {id: "beurre", label: "🧈 Beurre"},
+            {id: "oignons", label: "🧅 Oignons"},
+            {id: "farine", label: "🌾 Farine"},
+            {id: "eau", label: "💧 Eau"},
+            {id: "bouillon", label: "🍲 Cube bouillon"},
+            {id: "sel", label: "🧂 Sel"},
+            {id: "poivre", label: "🌶️ Poivre"},
+            {id: "sucre", label: "🍬 Sucre (incorrect)"}
+          ],
+          dropTargets: [
+            {id: "huile", label: "Huile d'olive"},
+            {id: "beurre", label: "Beurre"},
+            {id: "oignons", label: "Oignons"},
+            {id: "farine", label: "Farine"},
+            {id: "eau", label: "Eau"},
+            {id: "bouillon", label: "Cube bouillon"},
+            {id: "sel", label: "Sel"},
+            {id: "poivre", label: "Poivre"}
+          ],
+          taskType: "dragdrop"
+        },
+        {
+          instruction: "Choisissez la bonne forme impérative pour 'épluchez les oignons' :",
+          quiz: {
+            question: "Quelle forme est correcte ?",
+            options: ["Épluchez les oignons", "Éplucher les oignons", "Épluche les oignons"],
+            correct: "Épluche les oignons"
+          },
+          taskType: "quiz"
+        },
+        {
+          instruction: "Bravo! Vous avez fini le niveau Basis.",
+          taskType: "end"
+        }
+      ]
+    },
+    extra: {
+      title: "Niveau Extra",
+      steps: [
+        {
+          instruction: "Conjug
+            </html>
+            
+
